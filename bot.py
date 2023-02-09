@@ -23,8 +23,15 @@ async def on_message(message: discord.Message) -> None:
     if detect(message.content) != "pl":
         await message.delete()
         await message.channel.send("Mów po polsku, kurwa!")
-        await message.author.ban(reason="Mów po polsku, kurwa!")
-        time.sleep(banTime)
-        await message.author.unban()
+
+@client.event
+async def on_message_edit(before: discord.Message, after: discord.Message):
+    if after.author == client.user:
+        return
+    if 'Czech' in [r.name for r in after.author.roles]:
+        return
+    if detect(after.content) != "pl":
+        await after.delete()
+        await after.channel.send("Mów po polsku, kurwa!")
 
 client.run(TOKEN)
